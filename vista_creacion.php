@@ -10,23 +10,23 @@
 </head>
 
 <body>
-    <h2>Crear Usuario</h2>
-    <form method="POST" action="controlador_crear_usuario.php">
-        <div>
+    <form class="bloque-basico" method="POST" action="controlador_crear_usuario.php">
+        <h2>Crear Usuario</h2>
+        <div class="input-group">
             <label for="identificacion">Identificación</label>
-            <input name="identificacion" placeholder="Ingrese su identificación" required type="text">
+            <input id="identificacion" name="identificacion" placeholder="Ingrese su identificación" required type="text">
         </div>
-        <div>
+        <div class="input-group">
             <label for="nombre_completo">Nombre Completo</label>
-            <input name="nombre_completo" placeholder="Ingrese su nombre completo" required type="text">
+            <input id="nombre_completo" name="nombre_completo" placeholder="Ingrese su nombre completo" required type="text">
         </div>
-        <div>
+        <div class="input-group">
             <label for="usuario">Usuario</label>
-            <input name="usuario" placeholder="Ingrese su nombre de usuario" required type="text">
+            <input id="usuario" name="usuario" placeholder="Ingrese su nombre de usuario" required type="text">
         </div>
-        <div>
+        <div class="input-group">
             <label for="clave">Clave</label>
-            <input name="clave" placeholder="Ingrese su clave" required type="password">
+            <input id="clave" name="clave" placeholder="Ingrese su clave" required type="password">
         </div>
         <input type="submit" value="Procesar">
     </form>

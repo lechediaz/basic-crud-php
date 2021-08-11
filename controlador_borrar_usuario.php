@@ -1,48 +1,64 @@
 <?php
+include_once("variables-bd.php");
 
-$identificacion = isset($_POST["identificacion"]) ? $_POST["identificacion"] : '';
+// Recibir los valores de los parámetros desde petición GET.
 
-// En caso que no envien datos
-if (strlen($identificacion) == 0) {
-    echo "No ingresó identifiación";
-    return;
+$usuario = isset($_GET["usuario"]) ? $_GET["usuario"] : '';
+
+// Validar que los parámetros tengan valores.
+
+$paramsValidos = true;
+$mensaje = "";
+
+if (strlen($usuario) == 0) {
+    $mensaje = "No ingresó usuario";
+    $paramsValidos = false;
 }
 
-// Insertar en la base de datos.
+if ($paramsValidos) {
+    // Comprobar si el usuario existe en la base de datos.
 
-$host_bd = "localhost";
-$usuario_bd = "root";
-$contrasena_bd = "";
+    $mysqli = new mysqli($host_bd, $usuario_bd, $contrasena_bd, "adsi");
 
-$mysqli = new mysqli($host_bd, $usuario_bd, $contrasena_bd, "adsi");
+    $consulta  = "select count(1) cantidad from usuarios where usuario = '" . $usuario . "'";
 
-$consulta  = "select count(1) cantidad from usuarios where identificacion = '" . $identificacion . "'";
-$usuarioExiste = false;
+    if ($resultado = $mysqli->query($consulta)) {
+        if ($fila = $resultado->fetch_assoc()) {
 
-$mensaje = "El usuario se ha eliminado correctamente.";
-$linkVolver = "menu_crud_usuarios.php";
-$textoVoler = "Volver al menú.";
+            if ($fila["cantidad"] > 0) {
+                // Eliminar usuario en la base de datos.
 
-if ($resultado = $mysqli->query($consulta)) {
-    if ($fila = $resultado->fetch_assoc()) {
-        $usuarioExiste = $fila["cantidad"] > 0;
+                $delete  = "delete from usuarios where usuario = '" . $usuario . "'";
 
-        if ($usuarioExiste) {
-            $delete  = "delete from usuarios where identificacion = '" . $identificacion . "'";
-            $registroEliminado = $mysqli->query($delete);
-
-            if (!$registroEliminado) {
-                $mensaje = "No se pudo realizar la eliminación del usuario, por favor intente de nuevo.";
-                $linkVolver = "vista_borrado.php";
-                $textoVoler = "Volver.";
+                if ($mysqli->query($delete)) {
+                    $mensaje = "El usuario se ha eliminado correctamente.";
+                } else {
+                    $mensaje = "No se pudo realizar la eliminación del usuario, por favor intente de nuevo.";
+                }
+            } else {
+                $mensaje = "No existe este usuario.";
             }
-        } else {
-            $mensaje = "No existe un usuario con esta identiciación.";
-            $linkVolver = "vista_borrado.php";
-            $textoVoler = "Volver.";
         }
     }
 }
 ?>
-<strong><?php echo $mensaje ?></strong>
-<a href="<?php echo $linkVolver ?>"><?php echo $textoVoler ?></a>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet">
+    <title><?php echo $mensaje ?></title>
+</head>
+
+<body>
+    <div class="bloque-basico">
+        <p class="mensaje">
+            <em><?php echo $mensaje ?></em> <a href="index.php">Volver al menú.</a>
+        </p>
+    </div>
+</body>
+
+</html>
